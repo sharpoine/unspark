@@ -7,6 +7,7 @@
                 <th>İşlemler</th>
                 <th>İsim</th>
                 <th>Email</th>
+                <th>Kullanıcı Türü</th>
                 <th>Aktiflik</th>
             </tr>
         </thead>
@@ -37,6 +38,10 @@
                     {
                         data: 'email',
                         name: 'email'
+                    },
+                    {
+                        data: 'kullanici_turu',
+                        name: 'kullanici_turu'
                     },
                     {
                         data: 'action',

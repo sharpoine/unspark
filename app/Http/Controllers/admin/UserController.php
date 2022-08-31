@@ -7,24 +7,37 @@ use App\Models\Admin;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Yajra\Datatables\Datatables;
-
+use File;
 
 class UserController extends Controller
 {
     public function login()
     {
-        if (Auth::user()) {
+        if (Auth::user() && Auth::user()->aktif == 1) {
             return redirect('admin/');
         }
+
         return view('admin.login');
+    }
+    public function logout()
+    {
+        Auth::logout();
+        flash('Çıkış Yapıldı!', 'info')->setTitle('Uyarı');
+        return redirect('admin/');
     }
     public function loginPost(Request $req)
     {
         $email = $req->input('email');
         $password = $req->input('password');
         if (Auth::attempt(['email' => $email, 'password' => $password])) {
+            if (Auth::user()->aktif == 0) {
+                Auth::logout();
+                flash('Kullanıcı aktif değil!', 'error')->setTitle('Hata!');
+            }
             return redirect('admin/');
         }
+        flash('Hatalı Giriş!', 'error')->setTitle('Hata!');
+        return redirect('admin/login');
     }
     public function kullanicilar(Request $request)
     {
@@ -77,21 +90,33 @@ class UserController extends Controller
     }
     public function kullaniciEklePost(Request $req)
     {
+
         $req->validate([
-            'name' => 'required|max:64',
-            'email' => 'email|required',
-            'password' => 'required|min:8|max:64',
-            'password-repeat' => 'required|same:password'
+
+            'name'              =>      'required|string|max:48',
+            'email'             =>      'required|email|unique:admins,email',
+            'kullanici_turu'    =>      'required|in:admin,editor',
+            'password'          =>      'required|alpha_num|min:6',
+            'password-repeat'  =>      'required|same:password',
         ], [], [
             'name' => 'İsim',
             'email' => 'Email',
+            'kullanici_turu'=>'Kullanıcı Türü',
             'password' => 'Şifre',
             'password-repeat' => 'Şifre Tekrar'
         ]);
         $admin = new Admin();
         $admin->name = $req->input('name');
         $admin->email = $req->input('email');
+        $admin->kullanici_turu=$req->input('kullanici_turu');
         $admin->password = bcrypt($req->input('password'));
+
+        if ($req->file('image')) {
+            $file = $req->file('image');
+            $filename = date('YmdHi') . $file->getClientOriginalName();
+            $file->move(public_path('public/Image'), $filename);
+            $admin->profil_resmi = $filename;
+        }
         $admin->save();
         flash('Kullanıcı Eklendi', 'success')->setTitle('Başarılı');
         return view('admin.kullanicilar.add');
@@ -102,10 +127,54 @@ class UserController extends Controller
     }
     public function kullaniciDuzenle($id)
     {
+        $admin = Admin::where('id', $id)->first();
+        return view('admin.kullanicilar.edit', ['kullanici' => $admin]);
     }
     public function kullaniciDuzenlePost(Request $req, $id)
     {
+        $rules = [
+            'name'              =>      'required|string|max:48',
+            'email'             =>      'required|email|unique:admins,email,' . $id,
+            'kullanici_turu'    =>      'required|in:admin,editor',
+        ];
+        if ($req->input('password') && $req->input('password-repeat')) {
+            $rules = [
+                'name'              =>      'required|string|max:48',
+                'email'             =>      'required|email|unique:admins,email,' . $id,
+                'kullanici_turu'    =>      'required|in:admin,editor',
+                'password'          =>      'required|alpha_num|min:6',
+                'password-repeat'  =>      'required|same:password',
+            ];
+        }
 
+        $req->validate($rules, [], [
+            'name' => 'İsim',
+            'email' => 'Email',
+            'kullanici_turu' => 'Kullanıcı Türü',
+            'password' => 'Şifre',
+            'password-repeat' => 'Şifre Tekrar'
+        ]);
+        $admin = Admin::where('id', $id)->first();
+        $admin->name = $req->input('name');
+        $admin->email = $req->input('email');
+        $admin->kullanici_turu=$req->input('kullanici_turu');
+        if (array_key_exists('password', $rules)) {
+            $admin->password = bcrypt($req->input('password'));
+        }
+
+        if ($req->file('image')) {
+            if (file_exists(public_path('Image/') . $admin->profil_resmi)) {
+                unlink(public_path('Image/') . $admin->profil_resmi);
+            }
+
+            $file = $req->file('image');
+            $filename = date('YmdHi') . $file->getClientOriginalName();
+            $file->move(public_path('Image'), $filename);
+            $admin->profil_resmi = $filename;
+        }
+        $admin->save();
+        flash('Kullanıcı Güncellendi', 'success')->setTitle('Başarılı');
+        return redirect('admin/kullanicilar');
     }
     public function home()
     {

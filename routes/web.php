@@ -22,12 +22,14 @@ Route::get('/', function () {
 Route::get('admin/login',[UserController::class,'login'])->name('admin.login');
 Route::post('admin/loginPost',[UserController::class,'loginPost'])->name('admin.login.post');
 
-Route::group(['prefix'=>'admin','middleware'=>'auth'],function(){
+Route::group(['prefix'=>'admin','middleware'=>['auth','aktifMW']],function(){
+    Route::get('/logout',[UserController::class,'logout'])->name('admin.logout');
     Route::get('/',[UserController::class,'home'])->name('admin.home');
     Route::get('/kullanicilar',[UserController::class,'kullanicilar'])->name('admin.kullanicilar');
     Route::get('kullanicilar/aktifPost',[UserController::class,'aktifPost'])->name('admin.kullanicilar.aktifPost');
     Route::get('kullanicilar/ekle',[UserController::class,'kullaniciEkle'])->name('admin.kullanicilar.ekle');
     Route::post('kullanicilar/eklePost',[UserController::class,'kullaniciEklePost'])->name('admin.kullanicilar.eklePost');
     Route::post('kullanicilar/silPost/{id}',[UserController::class,'kullaniciSilPost'])->name('admin.kullanicilar.silPost');
-    Route::get('kullanicilar/duzenle',[UserController::class,'kullaniciDuzenle'])->name('admin.kullanicilar.duzenle');
+    Route::get('kullanicilar/duzenle/{id}',[UserController::class,'kullaniciDuzenle'])->name('admin.kullanicilar.duzenle');
+    Route::post('kullanicilar/duzenlePost/{id}',[UserController::class,'kullaniciDuzenlePost'])->name('admin.kullanicilar.duzenlePost');
 });

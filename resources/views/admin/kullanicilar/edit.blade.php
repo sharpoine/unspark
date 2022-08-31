@@ -7,7 +7,7 @@
                 <div class="col-lg-12">
                     <div class="p-5">
                         <div class="text-center">
-                            <h1 class="h4 text-gray-900 mb-4">Kullanıcı Ekle</h1>
+                            <h1 class="h4 text-gray-900 mb-4">Kullanıcı Düzenle</h1>
                         </div>
                         <div class="row">
                             <div class="col-xl-4">
@@ -16,11 +16,12 @@
                                     <div class="card-header">Profil Resmi</div>
                                     <div class="card-body text-center">
                                         <!-- Profile picture image-->
-                                        <img class="img-account-profile rounded-circle mb-2" style="height: 150px;width:150px" id="previewImg">
+                                        <img class="img-account-profile rounded-circle mb-2"
+                                            style="height: 150px;width:150px" id="previewImg">
                                         <!-- Profile picture help block-->
                                         <div class="small font-italic text-muted mb-4">JPG yada PNG (5mb dan küçük))</div>
                                         <!-- Profile picture upload button-->
-                                        <input form="ekleForm" type="file" accept="image/*" name="image" id="image"
+                                        <input form="duzenleForm" type="file" accept="image/*" name="image" id="image"
                                             hidden>
                                         <label class="btn btn-primary" for="image">Ekle</label>
                                     </div>
@@ -29,9 +30,9 @@
                             <div class="col-xl-8">
                                 <!-- Account details card-->
                                 <div class="card mb-4">
-                                    <div class="card-header">Hesap Bilgileri</div>
+                                    <div class="card-header">Hesap Detayları</div>
                                     <div class="card-body">
-                                        <form id="ekleForm" action="{{ route('admin.kullanicilar.eklePost') }}"
+                                        <form id="duzenleForm" action="{{ route('admin.kullanicilar.duzenlePost', $kullanici->id) }}"
                                             method="POST" enctype="multipart/form-data">
                                             @csrf
                                             @if ($errors->any())
@@ -46,7 +47,7 @@
                                             <!-- Form Group (username)-->
                                             <div class="mb-3">
                                                 <label class="small mb-1" for="name">İsim</label>
-                                                <input name='name' value='{{ old('name') }}' class="form-control"
+                                                <input name='name' value='{{ $kullanici->name }}' class="form-control"
                                                     id="inputUsername" type="text" placeholder="Enter your username">
                                             </div>
 
@@ -54,13 +55,13 @@
                                             <div class="mb-3">
                                                 <label class="small mb-1" for="email">Mail Adresi</label>
                                                 <input class="form-control" name="email" type="email"
-                                                    placeholder="Mail adresinizi girin" value="{{ old('email') }}">
+                                                    placeholder="Mail adresinizi girin" value="{{ $kullanici->email }}">
                                             </div>
                                             <div class="col-md-4 row gx-3 mb-3">
                                                 <label class="small mb-1" for="kullanici_turu">Kullanıcı Türü</label>
-                                               <select class="form-control" name="kullanici_turu" id="kullanici_turu">
-                                                    <option value="admin">Admin</option>
-                                                    <option value="editor">Editor</option>
+                                               <select  class="form-control" name="kullanici_turu" id="kullanici_turu">
+                                                    <option {{$kullanici->kullanici_turu=='admin'?'selected':''}} value="admin">Admin</option>
+                                                    <option {{$kullanici->kullanici_turu=='editor'?'selected':''}} value="editor">Editor</option>
                                                </select>
                                             </div>
                                             <div class="row gx-3 mb-3">
@@ -89,10 +90,11 @@
             </div>
         </div>
     </div>
-@endsection
+    @endsection
 @section('scripts')
     <script>
         $(function() {
+            previewImg.src="{{ url('Image/' . $kullanici->profil_resmi) }}"
             image.onchange = evt => {
                 const [file] = image.files
                 if (file) {

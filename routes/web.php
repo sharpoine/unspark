@@ -1,9 +1,8 @@
 <?php
 
+use App\Http\Controllers\admin\BlogController;
 use App\Http\Controllers\admin\UserController;
-use App\Http\Controllers\AdminController;
 use Illuminate\Support\Facades\Route;
-
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -32,4 +31,8 @@ Route::group(['prefix'=>'admin','middleware'=>['auth','aktifMW']],function(){
     Route::post('kullanicilar/silPost/{id}',[UserController::class,'kullaniciSilPost'])->name('admin.kullanicilar.silPost');
     Route::get('kullanicilar/duzenle/{id}',[UserController::class,'kullaniciDuzenle'])->name('admin.kullanicilar.duzenle');
     Route::post('kullanicilar/duzenlePost/{id}',[UserController::class,'kullaniciDuzenlePost'])->name('admin.kullanicilar.duzenlePost');
+
+    Route::get('blog/ekle',[BlogController::class,'icerikEkle'])->name('admin.blog.ekle');
+    Route::post('blog/eklePost',[BlogController::class,'icerikEklePost'])->name('admin.blog.eklePost');
+    Route::get('blog/goruntule/{id}',[BlogController::class,'icerikGoruntule'])->name('admin.blog.goruntule');
 });

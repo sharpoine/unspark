@@ -48,18 +48,18 @@
                                             <div class="mb-3">
                                                 <label class="small mb-1" for="name">İsim</label>
                                                 <input name='name' value='{{ $kullanici->name }}' class="form-control"
-                                                    id="inputUsername" type="text" placeholder="Enter your username">
+                                                    id="name" type="text" placeholder="İsminizi Girin...">
                                             </div>
 
 
                                             <div class="mb-3">
                                                 <label class="small mb-1" for="email">Mail Adresi</label>
-                                                <input class="form-control" name="email" type="email"
+                                                <input class="form-control" name="email" id="email" type="email"
                                                     placeholder="Mail adresinizi girin" value="{{ $kullanici->email }}">
                                             </div>
                                             <div class="col-md-4 row gx-3 mb-3">
                                                 <label class="small mb-1" for="kullanici_turu">Kullanıcı Türü</label>
-                                               <select  class="form-control" name="kullanici_turu" id="kullanici_turu">
+                                               <select {{$kullanici->id==Auth::user()->id?'disabled':''}} class="form-control" name="kullanici_turu" id="kullanici_turu">
                                                     <option {{$kullanici->kullanici_turu=='admin'?'selected':''}} value="admin">Admin</option>
                                                     <option {{$kullanici->kullanici_turu=='editor'?'selected':''}} value="editor">Editor</option>
                                                </select>
@@ -67,12 +67,12 @@
                                             <div class="row gx-3 mb-3">
                                                 <div class="col-md-6">
                                                     <label class="small mb-1" for="password">Şifre</label>
-                                                    <input class="form-control" name="password" type="password"
+                                                    <input class="form-control" id="password" name="password" type="password"
                                                         placeholder="Şifre girin">
                                                 </div>
                                                 <div class="col-md-6">
                                                     <label class="small mb-1" for="password-repeat">Şifre Doğrula</label>
-                                                    <input class="form-control" name="password-repeat" type="password"
+                                                    <input class="form-control" id="password-repeat" name="password-repeat" type="password"
                                                         placeholder="Şifreyi tekrar girin">
                                                 </div>
                                             </div>
@@ -94,7 +94,7 @@
 @section('scripts')
     <script>
         $(function() {
-            previewImg.src="{{ url('Image/' . $kullanici->profil_resmi) }}"
+            previewImg.src="{{ url('profileImage/' . $kullanici->profil_resmi) }}"
             image.onchange = evt => {
                 const [file] = image.files
                 if (file) {

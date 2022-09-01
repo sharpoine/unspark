@@ -20,7 +20,7 @@
         <link href="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.6.1/css/bootstrap4-toggle.min.css" rel="stylesheet">
     <!-- Custom styles for this template-->
     <link href="{{ asset('dist/css/sb-admin-2.min.css') }}" rel="stylesheet">
-
+    <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.css" rel="stylesheet">
 </head>
 
 <body id="page-top">

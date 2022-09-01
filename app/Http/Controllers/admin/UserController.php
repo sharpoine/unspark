@@ -114,12 +114,12 @@ class UserController extends Controller
         if ($req->file('image')) {
             $file = $req->file('image');
             $filename = date('YmdHi') . $file->getClientOriginalName();
-            $file->move(public_path('public/Image'), $filename);
+            $file->move(public_path('/profileImage'), $filename);
             $admin->profil_resmi = $filename;
         }
         $admin->save();
         flash('Kullanıcı Eklendi', 'success')->setTitle('Başarılı');
-        return view('admin.kullanicilar.add');
+        return redirect('admin/kullanicilar');
     }
     public function kullaniciSilPost($id)
     {
@@ -163,13 +163,13 @@ class UserController extends Controller
         }
 
         if ($req->file('image')) {
-            if (file_exists(public_path('Image/') . $admin->profil_resmi)) {
-                unlink(public_path('Image/') . $admin->profil_resmi);
+            if (file_exists(public_path('profileImage/') . $admin->profil_resmi)) {
+                unlink(public_path('profileImage/') . $admin->profil_resmi);
             }
 
             $file = $req->file('image');
             $filename = date('YmdHi') . $file->getClientOriginalName();
-            $file->move(public_path('Image'), $filename);
+            $file->move(public_path('profileImage'), $filename);
             $admin->profil_resmi = $filename;
         }
         $admin->save();

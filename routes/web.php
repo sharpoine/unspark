@@ -34,5 +34,5 @@ Route::group(['prefix'=>'admin','middleware'=>['auth','aktifMW']],function(){
 
     Route::get('blog/ekle',[BlogController::class,'icerikEkle'])->name('admin.blog.ekle');
     Route::post('blog/eklePost',[BlogController::class,'icerikEklePost'])->name('admin.blog.eklePost');
-    Route::get('blog/goruntule/{id}',[BlogController::class,'icerikGoruntule'])->name('admin.blog.goruntule');
+    Route::get('blog/goruntule/',[BlogController::class,'icerikler'])->name('admin.blog.goruntule');
 });

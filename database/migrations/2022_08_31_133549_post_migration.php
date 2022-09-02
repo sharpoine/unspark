@@ -18,6 +18,7 @@ class PostMigration extends Migration
             $table->bigIncrements('id');
             $table->string('baslik');
             $table->text('icerik');
+            $table->string('onizleme')->nullable();
             $table->tinyInteger('aktif')->default(0);
             $table->bigInteger('kullanici_id')->unsigned();
             $table->timestamps();

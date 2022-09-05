@@ -101,14 +101,14 @@ class UserController extends Controller
         ], [], [
             'name' => 'İsim',
             'email' => 'Email',
-            'kullanici_turu'=>'Kullanıcı Türü',
+            'kullanici_turu' => 'Kullanıcı Türü',
             'password' => 'Şifre',
             'password-repeat' => 'Şifre Tekrar'
         ]);
         $admin = new Admin();
         $admin->name = $req->input('name');
         $admin->email = $req->input('email');
-        $admin->kullanici_turu=$req->input('kullanici_turu');
+        $admin->kullanici_turu = $req->input('kullanici_turu');
         $admin->password = bcrypt($req->input('password'));
 
         if ($req->file('image')) {
@@ -157,13 +157,13 @@ class UserController extends Controller
         $admin = Admin::where('id', $id)->first();
         $admin->name = $req->input('name');
         $admin->email = $req->input('email');
-        $admin->kullanici_turu=$req->input('kullanici_turu');
+        $admin->kullanici_turu = $req->input('kullanici_turu');
         if (array_key_exists('password', $rules)) {
             $admin->password = bcrypt($req->input('password'));
         }
 
         if ($req->file('image')) {
-            if (file_exists(public_path('profileImage/') . $admin->profil_resmi)) {
+            if (file_exists(public_path('profileImage/') . $admin->profil_resmi && $admin->profil_resmi)) {
                 unlink(public_path('profileImage/') . $admin->profil_resmi);
             }
 

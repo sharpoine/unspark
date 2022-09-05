@@ -5,7 +5,9 @@ namespace App\Http\Controllers\admin;
 use App\Models\Post;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Models\PostView;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cookie;
 use Yajra\DataTables\Facades\DataTables;
 
 class BlogController extends Controller
@@ -61,7 +63,30 @@ class BlogController extends Controller
     }
     public function icerikler(Request $request)
     {
+        $posts = PostView::when($request->baslik, function ($query, $baslik) {
+            return $query->where('baslik', 'like', '%' . $baslik . '%');
+        })->when($request->icerik, function ($query, $icerik) {
+            return $query->where('icerik', 'like' . '%' . $icerik . '%');
+        })->when($request->kullanici, function ($query, $kullanici) {
+            return $query->where('admin_name', 'like', '%' . $kullanici . '%');
+        })->when($request->baslangicTarihi, function ($query, $tarih) {
+            $baslangicTarihi = explode('|', $tarih)[0];
+            $bitisTarihi = explode('|', $tarih)[1];
+            return $query->where('baslangic_tarihi',  '>=', $baslangicTarihi)->where('bitis_tarihi', '<=', $bitisTarihi);
+        }, function ($query) {
+            return $query->orderByDesc('post_id');
+        })->paginate(9);
 
-        return view('admin.blog.list');
+
+
+
+        return view('admin.blog.list', ['posts' => $posts, 'filtre' => $request]);
+    }
+    public function aktifPost(Request $req)
+    {
+        $durum = $req->input('aktif');
+        $id = $req->input('id');
+        Post::where('id', $id)->update(['aktif' => $durum]);
+        return response()->json(['success' => 'Durum değiştirildi.']);
     }
 }

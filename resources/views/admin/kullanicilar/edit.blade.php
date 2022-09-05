@@ -59,6 +59,9 @@
                                             </div>
                                             <div class="col-md-4 row gx-3 mb-3">
                                                 <label class="small mb-1" for="kullanici_turu">Kullanıcı Türü</label>
+                                                @if ($kullanici->id==Auth::user()->id)
+                                                <input type="hidden" name="kullanici_turu" value="{{Auth::user()->kullanici_turu}}">
+                                                @endif
                                                <select {{$kullanici->id==Auth::user()->id?'disabled':''}} class="form-control" name="kullanici_turu" id="kullanici_turu">
                                                     <option {{$kullanici->kullanici_turu=='admin'?'selected':''}} value="admin">Admin</option>
                                                     <option {{$kullanici->kullanici_turu=='editor'?'selected':''}} value="editor">Editor</option>

@@ -11,19 +11,19 @@
             <br>
             <div class="row">
                 @foreach ($posts as $post)
-                    <div class="col-md-4 mb-5">
+                    <div class="col-md-4 mb-5" id="card-{{$post->post_id}}">
                         <article class="card">
                             <div class="card-header">
-                                <button id="edit" data-id="{{ $post->post_id }}"
+                                <a href="{{route('admin.blog.duzenle',$post->post_id)}}" id="edit"
                                     class="btn btn-warning btn-circle btn-md">
                                     <i class="fas fa-edit"></i>
-                                </button>
+                                </a>
                                 <button id="delete" data-id="{{ $post->post_id }}"
                                     class="btn btn-danger btn-circle btn-md">
                                     <i class="fas fa-trash"></i>
                                 </button>
                                 <div class="float-right">
-                                    <input class="toggle" id="aktif" name="aktif" type="checkbox"
+                                    <input class="toggle aktif" name="aktif" type="checkbox"
                                         {{ $post->aktif ? 'checked' : '' }} data-id="{{ $post->post_id }}"
                                         data-toggle="toggle" data-on="Aktif." data-off="Pasif." data-onstyle="success"
                                         data-offstyle="secondary" data-size="sm">
@@ -75,8 +75,8 @@
     <script>
         $('body').on('click', '#delete', function() {
             var row_id = $(this).data("id");
-            var result = confirm("Kullanıcıyı silmek istediğinizden emin misiniz?");
-            var url = "{{ route('admin.kullanicilar.silPost', ':id') }}";
+            var result = confirm("İçeriği silmek istediğinizden emin misiniz?");
+            var url = "{{ route('admin.blog.silPost', ':id') }}";
             url = url.replace(':id', row_id);
             if (result) {
                 $.ajax({
@@ -86,7 +86,7 @@
                         if (data.error) {
                             flasher.error(data.error);
                         } else {
-                            table.draw();
+                            $('#card-'+row_id).fadeOut(300, function(){ $(this).remove();});
                             flasher.success(data.success);
                         }
 
@@ -106,7 +106,7 @@
             window.location = url;
 
         });
-        $('#aktif').change(function() {
+        $('.aktif').change(function() {
             var status = $(this).prop('checked') == true ? 1 : 0;
             var user_id = $(this).data('id');
             $.ajax({

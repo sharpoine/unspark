@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\admin\BlogController;
 use App\Http\Controllers\admin\UserController;
+use App\Http\Controllers\FrontController;
 use Illuminate\Support\Facades\Route;
 /*
 |--------------------------------------------------------------------------
@@ -14,9 +15,10 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/', [FrontController::class,'Anasayfa']);
+Route::get('/hakkimizda',[FrontController::class,'Hakkimizda']);
+Route::get('/blog',[FrontController::class,'Blog']);
+Route::get('/iletisim',[FrontController::class,'Iletisim']);
 
 Route::get('admin/login',[UserController::class,'login'])->name('admin.login');
 Route::post('admin/loginPost',[UserController::class,'loginPost'])->name('admin.login.post');
@@ -36,4 +38,8 @@ Route::group(['prefix'=>'admin','middleware'=>['auth','aktifMW']],function(){
     Route::post('blog/eklePost',[BlogController::class,'icerikEklePost'])->name('admin.blog.eklePost');
     Route::get('blog/goruntule/',[BlogController::class,'icerikler'])->name('admin.blog.goruntule');
     Route::get('blog/aktifPost',[BlogController::class,'aktifPost'])->name('admin.blog.aktifPost');
+    Route::post('blog/silPost/{id}',[BlogController::class,'icerikSilPost'])->name('admin.blog.silPost');
+    Route::get('blog/duzenle/{id}',[BlogController::class,'icerikDuzenle'])->name('admin.blog.duzenle');
+    Route::post('blog/duzenlePost/{id}',[BlogController::class,'icerikDuzenlePost'])->name('admin.blog.duzenlePost');
+
 });

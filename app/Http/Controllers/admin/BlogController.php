@@ -7,8 +7,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\PostView;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Cookie;
-use Yajra\DataTables\Facades\DataTables;
+
 
 class BlogController extends Controller
 {
@@ -63,16 +62,18 @@ class BlogController extends Controller
     }
     public function icerikler(Request $request)
     {
+
+
         $posts = PostView::when($request->baslik, function ($query, $baslik) {
             return $query->where('baslik', 'like', '%' . $baslik . '%');
         })->when($request->icerik, function ($query, $icerik) {
             return $query->where('icerik', 'like' . '%' . $icerik . '%');
         })->when($request->kullanici, function ($query, $kullanici) {
             return $query->where('admin_name', 'like', '%' . $kullanici . '%');
-        })->when($request->baslangicTarihi, function ($query, $tarih) {
+        })->when($request->baslangicBitisTarihi, function ($query, $tarih) {
             $baslangicTarihi = explode('|', $tarih)[0];
             $bitisTarihi = explode('|', $tarih)[1];
-            return $query->where('baslangic_tarihi',  '>=', $baslangicTarihi)->where('bitis_tarihi', '<=', $bitisTarihi);
+            return $query->whereBetween('created_at',array($baslangicTarihi , $bitisTarihi));
         }, function ($query) {
             return $query->orderByDesc('post_id');
         })->paginate(9);
@@ -89,4 +90,43 @@ class BlogController extends Controller
         Post::where('id', $id)->update(['aktif' => $durum]);
         return response()->json(['success' => 'Durum değiştirildi.']);
     }
+    public function icerikSilPost($id)
+    {
+        Post::where('id', $id)->delete();
+    }
+    public function icerikDuzenle($id)
+    {
+        $post = Post::where('id', $id)->first();
+        return view('admin.blog.edit', ['post' => $post]);
+    }
+    public function icerikDuzenlePost(Request $req, $id)
+    {
+        $rules = [
+            'baslik'              =>      'required|string|max:256|unique:posts,baslik,'.$id,
+            'icerik'             =>      'required',
+        ];
+
+        $req->validate($rules, [], [
+            'baslik' => 'Başlık',
+            'icerik' => 'İçerik',
+        ]);
+        $post = Post::where('id', $id)->first();
+        $post->baslik = $req->input('baslik');
+        $post->icerik = $req->input('icerik');
+
+        if ($req->file('onizleme')) {
+            if (file_exists(public_path('postPreviewImage/') . $post->onizleme && $post->onizleme)) {
+                unlink(public_path('postPreviewImage/') . $post->onizleme);
+            }
+
+            $file = $req->file('onizleme');
+            $filename = date('YmdHi') . $file->getClientOriginalName();
+            $file->move(public_path('postPreviewImage'), $filename);
+            $post->onizleme= $filename;
+        }
+        $post->save();
+        flash('İçerik Güncellendi', 'success')->setTitle('Başarılı');
+        return redirect('admin/blog/goruntule');
+    }
+
 }

@@ -15,10 +15,11 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', [FrontController::class,'Anasayfa']);
-Route::get('/hakkimizda',[FrontController::class,'Hakkimizda']);
-Route::get('/blog',[FrontController::class,'Blog']);
-Route::get('/iletisim',[FrontController::class,'Iletisim']);
+Route::get('/', [FrontController::class,'Anasayfa'])->name('front.anasayfa');
+Route::get('/hakkimizda',[FrontController::class,'Hakkimizda'])->name('front.hakkimizda');
+Route::get('/blog',[FrontController::class,'Blog'])->name('front.blog');
+Route::get('/blog/{baslik}',[FrontController::class,'BlogDetay'])->name('front.blogdetay');
+Route::get('/iletisim',[FrontController::class,'Iletisim'])->name('front.iletisim');
 
 Route::get('admin/login',[UserController::class,'login'])->name('admin.login');
 Route::post('admin/loginPost',[UserController::class,'loginPost'])->name('admin.login.post');

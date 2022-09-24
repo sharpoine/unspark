@@ -17,6 +17,7 @@ class PostMigration extends Migration
         Schema::create('posts',function(Blueprint $table){
             $table->bigIncrements('id');
             $table->string('baslik');
+            $table->string('slug');
             $table->text('icerik');
             $table->string('onizleme')->nullable();
             $table->tinyInteger('aktif')->default(0);

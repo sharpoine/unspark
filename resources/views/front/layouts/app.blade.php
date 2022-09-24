@@ -36,35 +36,73 @@
 
     @include('front.layouts.footer')
     <!-- jQuery -->
-    <script src="{{asset('frontDist/plugins/jQuery/jquery.min.js')}}"></script>
+    <script src="{{ asset('frontDist/plugins/jQuery/jquery.min.js') }}"></script>
     <!-- Bootstrap JS -->
-    <script src="{{asset('frontDist/plugins/bootstrap/bootstrap.min.js')}}"></script>
+    <script src="{{ asset('frontDist/plugins/bootstrap/bootstrap.min.js') }}"></script>
     <!-- slick slider -->
-    <script src="{{asset('frontDist/plugins/slick/slick.min.js')}}"></script>
+    <script src="{{ asset('frontDist/plugins/slick/slick.min.js') }}"></script>
     <!-- venobox -->
-    <script src="{{asset('frontDist/plugins/venobox/venobox.min.js')}}"></script>
+    <script src="{{ asset('frontDist/plugins/venobox/venobox.min.js') }}"></script>
     <!-- shuffle -->
-    <script src="{{asset('frontDist/plugins/shuffle/shuffle.min.js')}}"></script>
+    <script src="{{ asset('frontDist/plugins/shuffle/shuffle.min.js') }}"></script>
     <!-- apear js -->
-    <script src="{{asset('frontDist/plugins/counto/apear.js')}}"></script>
+    <script src="{{ asset('frontDist/plugins/counto/apear.js') }}"></script>
     <!-- counter -->
-    <script src="{{asset('frontDist/plugins/counto/counTo.js')}}"></script>
+    <script src="{{ asset('frontDist/plugins/counto/counTo.js') }}"></script>
     <!-- card slider -->
-    <script src="{{asset('frontDist/plugins/card-slider/js/card-slider-min.js')}}"></script>
+    <script src="{{ asset('frontDist/plugins/card-slider/js/card-slider-min.js') }}"></script>
     <!-- google map -->
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCcABaamniA6OL5YvYSpB3pFMNrXwXnLwU&libraries=places">
     </script>
-    <script src="{{asset('frontDist/plugins/google-map/gmap.js')}}"></script>
+    <script src="{{ asset('frontDist/plugins/google-map/gmap.js') }}"></script>
 
     <!-- Main Script -->
-    <script src="{{asset('frontDist/js/script.js')}}"></script>
+    <script src="{{ asset('frontDist/js/script.js') }}"></script>
     <script type="text/javascript">
         $.ajaxSetup({
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             }
         });
+        $("#anasayfaBtn").click(function() {
+            $('html,body').animate({
+                    scrollTop: $("#anasayfa").offset().top
+                },
+                'slow');
+        });
+        $("#hakkimizdaBtn").click(function() {
+            $('html,body').animate({
+                    scrollTop: $("#hakkimizda").offset().top
+                },
+                'slow');
+        });
+        $("#hizmetlerimizBtn").click(function() {
+            $('html,body').animate({
+                    scrollTop: $("#hizmetlerimiz").offset().top
+                },
+                'slow');
+        });
+        const sections = document.querySelectorAll("section");
+        const navLi = document.querySelectorAll("nav #navigation ul li");
+        window.addEventListener("scroll", () => {
+            let current = "";
+            sections.forEach((section) => {
+                const sectionTop = section.offsetTop;
+                const sectionHeight = section.clientHeight;
+                if (pageYOffset >= sectionTop - sectionHeight / 3) {
+                    current = section.getAttribute("id");
+                }
+            });
+
+            navLi.forEach((li) => {
+                li.classList.remove("active");
+                if (li.classList.contains(current)) {
+                    li.classList.add("active");
+                }
+            });
+        });
     </script>
+
     @yield('scripts')
 </body>
 

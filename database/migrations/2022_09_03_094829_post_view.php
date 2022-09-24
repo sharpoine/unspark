@@ -14,7 +14,7 @@ class PostView extends Migration
      */
     public function up()
     {
-        DB::statement('CREATE VIEW postView AS SELECT posts.id AS post_id,posts.baslik,posts.icerik,posts.onizleme,posts.aktif,posts.created_at,posts.updated_at,admins.id AS admin_id,
+        DB::statement('CREATE VIEW postView AS SELECT posts.id AS post_id,posts.baslik,posts.slug,posts.icerik,posts.onizleme,posts.aktif,posts.created_at,posts.updated_at,admins.id AS admin_id,
         admins.name AS admin_name FROM posts INNER JOIN admins ON admins.id=posts.kullanici_id ');
     }
 
